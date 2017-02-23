@@ -23,6 +23,7 @@
  */
 
 
+#include <iostream>
 #include <QDomElement>
 
 #include "SporthControls.h"
@@ -36,7 +37,8 @@ SporthControls::SporthControls( SporthEffect* effect ) :
 	m_inputGainModel( 0.0f, -60.0f, 15, 0.1f, this, tr( "Input Gain" ) ),
 	m_sizeModel( 0.89f, 0.0f, 1.0f, 0.01f, this, tr( "Size" ) ),
 	m_colorModel( 10000.0f, 100.0f, 15000.0f, 0.1f, this, tr( "Color" ) ),
-	m_outputGainModel( 0.0f, -60.0f, 15, 0.1f, this, tr( "Output Gain" ) )
+	m_outputGainModel( 0.0f, -60.0f, 15, 0.1f, this, tr( "Output Gain" ) ),
+	m_compileModel( false, this, tr( "Toggle" ) )
 {
 }
 
@@ -59,4 +61,3 @@ void SporthControls::saveSettings( QDomDocument& doc, QDomElement& _this )
 	m_colorModel.saveSettings( doc, _this, "color" );
 	m_outputGainModel.saveSettings( doc, _this, "output_gain" ); 
 }
-

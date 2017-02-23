@@ -25,9 +25,12 @@
 #ifndef SPORTH_CONTROLS_H
 #define SPORTH_CONTROLS_H
 
+#include <QPlainTextEdit>
 #include "EffectControls.h"
 #include "SporthControlDialog.h"
 #include "Knob.h"
+#include "PixmapButton.h"
+#include "LedCheckbox.h"
 
 
 class SporthEffect;
@@ -59,8 +62,10 @@ public:
 	}
 
 
+
 private slots:
 	void changeControl();
+	void updateLayout();
 
 private:
 	SporthEffect* m_effect;
@@ -68,6 +73,9 @@ private:
 	FloatModel m_sizeModel;
 	FloatModel m_colorModel;
 	FloatModel m_outputGainModel;
+    BoolModel m_compileModel;
+
+    QPlainTextEdit *textEditor;
 
 	friend class SporthControlDialog;
 	friend class SporthEffect;

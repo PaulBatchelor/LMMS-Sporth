@@ -21,6 +21,8 @@
  */
 
 #include <math.h>
+#include <iostream>
+
 #include "Sporth.h"
 
 #include "embed.cpp"
@@ -54,8 +56,9 @@ SporthEffect::SporthEffect( Model* parent, const Descriptor::SubPluginFeatures::
     plumber_register(&pd);
     plumber_init(&pd);
     pd.sp = sp;
-    plumber_parse_string(&pd, "0 p 'val' print 100 300 scale 0.1 sine dup");
+    plumber_parse_string(&pd, "0 p 100 300 scale 0.1 sine dup");
     plumber_compute(&pd, PLUMBER_INIT);
+    prev = -1;
 
 }
 
@@ -82,7 +85,18 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 	ValueBuffer * sizeBuf = m_reverbSCControls.m_sizeModel.valueBuffer();
 	ValueBuffer * colorBuf = m_reverbSCControls.m_colorModel.valueBuffer();
 	ValueBuffer * outGainBuf = m_reverbSCControls.m_outputGainModel.valueBuffer();
+	ValueBuffer * compileBuf = m_reverbSCControls.m_compileModel.valueBuffer();
 
+		
+    SPFLOAT compile = m_reverbSCControls.m_compileModel.value();
+    if(compile != prev && prev != -1) {
+        std::cout << "BING!\n";
+        prev = compile;
+
+        std::string txt = m_reverbSCControls.textEditor->toPlainText().toUtf8().constData();
+        std::cout << txt << "\n";
+        plumber_recompile_string(&pd, (char *)txt.c_str());
+    }
 	for( fpp_t f = 0; f < frames; ++f )
 	{
 	
@@ -92,6 +106,10 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 		const SPFLOAT outGain = (SPFLOAT)DB2LIN((outGainBuf ? 
 			outGainBuf->values()[f] 
 			: m_reverbSCControls.m_outputGainModel.value()));
+		
+
+
+        prev = compile;
 
         pd.p[0] = inGain;
         plumber_compute(&pd, PLUMBER_COMPUTE);

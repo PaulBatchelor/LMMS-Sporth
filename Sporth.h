@@ -52,6 +52,7 @@ private:
 	SporthControls m_reverbSCControls;
 	sp_data *sp;
     plumber_data pd;
+    SPFLOAT prev;
 	friend class SporthControls;
 } ;
 
