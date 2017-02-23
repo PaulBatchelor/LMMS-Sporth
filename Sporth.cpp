@@ -30,7 +30,7 @@
 extern "C"
 {
 
-Plugin::Descriptor PLUGIN_EXPORT sporth_plugin_descriptor =
+Plugin::Descriptor PLUGIN_EXPORT sporthedit_plugin_descriptor =
 {
 	STRINGIFY( PLUGIN_NAME ),
 	"Sporth",
@@ -46,27 +46,22 @@ Plugin::Descriptor PLUGIN_EXPORT sporth_plugin_descriptor =
 }
 
 SporthEffect::SporthEffect( Model* parent, const Descriptor::SubPluginFeatures::Key* key ) :
-	Effect( &sporth_plugin_descriptor, parent, key ),
+	Effect( &sporthedit_plugin_descriptor, parent, key ),
 	m_reverbSCControls( this )
 {
 	sp_create(&sp);
 	sp->sr = Engine::mixer()->processingSampleRate();
+    plumber_register(&pd);
+    plumber_init(&pd);
+    pd.sp = sp;
+    plumber_parse_string(&pd, "0 p 'val' print 100 300 scale 0.1 sine dup");
+    plumber_compute(&pd, PLUMBER_INIT);
 
-	sp_revsc_create(&revsc);
-	sp_revsc_init(sp, revsc);
-
-	sp_dcblock_create(&dcblk[0]);
-	sp_dcblock_create(&dcblk[1]);
-	
-	sp_dcblock_init(sp, dcblk[0]);
-	sp_dcblock_init(sp, dcblk[1]);
 }
 
 SporthEffect::~SporthEffect()
 {
-	sp_revsc_destroy(&revsc);
-	sp_dcblock_destroy(&dcblk[0]);
-	sp_dcblock_destroy(&dcblk[1]);
+    plumber_clean(&pd);
 	sp_destroy(&sp);
 }
 
@@ -81,8 +76,7 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 	const float d = (dryLevel() + 1) * 0.5;
 	const float w = (wetLevel() + 1) * 0.5;
 
-	SPFLOAT tmpL, tmpR;
-	SPFLOAT dcblkL, dcblkR;
+	SPFLOAT outL, outR;
 	
 	ValueBuffer * inGainBuf = m_reverbSCControls.m_inputGainModel.valueBuffer();
 	ValueBuffer * sizeBuf = m_reverbSCControls.m_sizeModel.valueBuffer();
@@ -92,8 +86,6 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 	for( fpp_t f = 0; f < frames; ++f )
 	{
 	
-		sample_t s[2] = { buf[f][0], buf[f][1] };
-
 		const SPFLOAT inGain = (SPFLOAT)DB2LIN((inGainBuf ? 
 			inGainBuf->values()[f] 
 			: m_reverbSCControls.m_inputGainModel.value()));
@@ -101,22 +93,13 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 			outGainBuf->values()[f] 
 			: m_reverbSCControls.m_outputGainModel.value()));
 
-		s[0] *= inGain;
-		s[1] *= inGain;
-		revsc->feedback = (SPFLOAT)(sizeBuf ? 
-			sizeBuf->values()[f] 
-			: m_reverbSCControls.m_sizeModel.value());
+        pd.p[0] = inGain;
+        plumber_compute(&pd, PLUMBER_COMPUTE);
+        outR = sporth_stack_pop_float(&pd.sporth.stack);
+        outL = sporth_stack_pop_float(&pd.sporth.stack);
 
-		revsc->lpfreq = (SPFLOAT)(colorBuf ? 
-			colorBuf->values()[f] 
-			: m_reverbSCControls.m_colorModel.value());
-
-
-		sp_revsc_compute(sp, revsc, &s[0], &s[1], &tmpL, &tmpR);
-		sp_dcblock_compute(sp, dcblk[0], &tmpL, &dcblkL);
-		sp_dcblock_compute(sp, dcblk[1], &tmpR, &dcblkR);
-		buf[f][0] = d * buf[f][0] + w * dcblkL * outGain;
-		buf[f][1] = d * buf[f][1] + w * dcblkR * outGain;
+		buf[f][0] = d * buf[f][0] + w * outL * outGain;
+		buf[f][1] = d * buf[f][1] + w * outR * outGain;
 		outSum += buf[f][0]*buf[f][0] + buf[f][1]*buf[f][1];
 	}
 

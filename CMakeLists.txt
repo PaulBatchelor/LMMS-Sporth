@@ -91,7 +91,7 @@ CONFIGURE_FILE("lmmsversion.h.in"       "${CMAKE_BINARY_DIR}/lmmsversion.h")
 
 
 BUILD_PLUGIN(
-	sporth
+	sporthedit
 	Sporth.cpp 
 	SporthControls.cpp 
 	SporthControlDialog.cpp 
@@ -102,4 +102,4 @@ BUILD_PLUGIN(
 	EMBEDDED_RESOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.png"
 )
 
-TARGET_LINK_LIBRARIES(sporth soundpipe)
+TARGET_LINK_LIBRARIES(sporthedit soundpipe sporth)

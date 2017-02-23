@@ -23,15 +23,16 @@
  */
 
 
-#ifndef SPORTH_H
-#define SPORTH_H
+#ifndef SPORTHPLUGIN_H
+#define SPORTHPLUGIN_H
 
 #include "Effect.h"
 #include "SporthControls.h"
 #include "ValueBuffer.h"
 
 extern "C" {
-    #include "soundpipe.h"
+    #include <soundpipe.h>
+    #include <sporth.h>
 }
 
 class SporthEffect : public Effect
@@ -50,8 +51,7 @@ public:
 private:
 	SporthControls m_reverbSCControls;
 	sp_data *sp;
-	sp_revsc *revsc;
-	sp_dcblock *dcblk[2];
+    plumber_data pd;
 	friend class SporthControls;
 } ;
 
