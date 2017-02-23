@@ -91,19 +91,15 @@ CONFIGURE_FILE("lmmsversion.h.in"       "${CMAKE_BINARY_DIR}/lmmsversion.h")
 
 
 BUILD_PLUGIN(
-	reverbsc
-	ReverbSC.cpp 
-	ReverbSCControls.cpp 
-	ReverbSCControlDialog.cpp 
-	base.c
-	revsc.c
-	dcblock.c
+	sporth
+	Sporth.cpp 
+	SporthControls.cpp 
+	SporthControlDialog.cpp 
 	MOCFILES 
-	ReverbSC.h
-	ReverbSCControls.h 
-	ReverbSCControlDialog.h 
-	base.h
-	revsc.h
-	dcblock.h
+	Sporth.h
+	SporthControls.h 
+	SporthControlDialog.h 
 	EMBEDDED_RESOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.png"
 )
+
+TARGET_LINK_LIBRARIES(sporth soundpipe)

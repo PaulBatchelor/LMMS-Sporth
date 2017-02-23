@@ -1,5 +1,5 @@
 /*
- * ReverbSCControlDialog.cpp - control dialog for ReverbSC
+ * SporthControlDialog.cpp - control dialog for Sporth
  *
  * Copyright (c) 2017 Paul Batchelor
  *
@@ -24,11 +24,11 @@
 
 #include <QLayout>
 
-#include "ReverbSCControlDialog.h"
-#include "ReverbSCControls.h"
+#include "SporthControlDialog.h"
+#include "SporthControls.h"
 #include "embed.h"
 
-ReverbSCControlDialog::ReverbSCControlDialog( ReverbSCControls* controls ) :
+SporthControlDialog::SporthControlDialog( SporthControls* controls ) :
 	EffectControlDialog( controls )
 {
 	setAutoFillBackground( true );

@@ -1,5 +1,5 @@
 /*
- * ReverbSCControls.h 
+ * SporthControls.h 
  *
  * Copyright (c) 2017 Paul Batchelor
  * 
@@ -22,22 +22,22 @@
  *
  */
 
-#ifndef REVERBSC_CONTROLS_H
-#define REVERBSC_CONTROLS_H
+#ifndef SPORTH_CONTROLS_H
+#define SPORTH_CONTROLS_H
 
 #include "EffectControls.h"
-#include "ReverbSCControlDialog.h"
+#include "SporthControlDialog.h"
 #include "Knob.h"
 
 
-class ReverbSCEffect;
+class SporthEffect;
 
-class ReverbSCControls : public EffectControls
+class SporthControls : public EffectControls
 {
 	Q_OBJECT
 public:
-	ReverbSCControls( ReverbSCEffect* effect );
-	virtual ~ReverbSCControls()
+	SporthControls( SporthEffect* effect );
+	virtual ~SporthControls()
 	{
 	}
 
@@ -45,7 +45,7 @@ public:
 	virtual void loadSettings( const QDomElement & _this );
 	inline virtual QString nodeName() const
 	{
-		return "ReverbSCControls";
+		return "SporthControls";
 	}
 
 	virtual int controlCount()
@@ -55,7 +55,7 @@ public:
 
 	virtual EffectControlDialog* createView()
 	{
-		return new ReverbSCControlDialog( this );
+		return new SporthControlDialog( this );
 	}
 
 
@@ -63,14 +63,14 @@ private slots:
 	void changeControl();
 
 private:
-	ReverbSCEffect* m_effect;
+	SporthEffect* m_effect;
 	FloatModel m_inputGainModel;
 	FloatModel m_sizeModel;
 	FloatModel m_colorModel;
 	FloatModel m_outputGainModel;
 
-	friend class ReverbSCControlDialog;
-	friend class ReverbSCEffect;
+	friend class SporthControlDialog;
+	friend class SporthEffect;
 
 } ;
 

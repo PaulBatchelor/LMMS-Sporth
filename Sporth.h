@@ -1,5 +1,5 @@
 /*
- * ReverbSCControlDialog.h - control dialog for ReverbSC
+ * RerverbSC.h - Reverb algorithm by Sean Costello
  *
  * Copyright (c) 2017 Paul Batchelor
  *
@@ -22,24 +22,37 @@
  *
  */
 
-#ifndef REVERBSC_CONTROL_DIALOG_H
-#define REVERBSC_CONTROL_DIALOG_H
 
-#include "EffectControlDialog.h"
+#ifndef SPORTH_H
+#define SPORTH_H
 
+#include "Effect.h"
+#include "SporthControls.h"
+#include "ValueBuffer.h"
 
-class ReverbSCControls;
+extern "C" {
+    #include "soundpipe.h"
+}
 
-
-class ReverbSCControlDialog : public EffectControlDialog
+class SporthEffect : public Effect
 {
-	Q_OBJECT
 public:
-	ReverbSCControlDialog( ReverbSCControls* controls );
-	virtual ~ReverbSCControlDialog()
+	SporthEffect( Model* parent, const Descriptor::SubPluginFeatures::Key* key );
+	virtual ~SporthEffect();
+	virtual bool processAudioBuffer( sampleFrame* buf, const fpp_t frames );
+
+	virtual EffectControls* controls()
 	{
+		return &m_reverbSCControls;
 	}
 
+
+private:
+	SporthControls m_reverbSCControls;
+	sp_data *sp;
+	sp_revsc *revsc;
+	sp_dcblock *dcblk[2];
+	friend class SporthControls;
 } ;
 
 #endif

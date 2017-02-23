@@ -1,5 +1,5 @@
 /*
- * ReverbSC.cpp - A native reverb based on an algorithm by Sean Costello
+ * Sporth.cpp - A native reverb based on an algorithm by Sean Costello
  *
  * This file is part of LMMS - http://lmms.io
  *
@@ -21,7 +21,7 @@
  */
 
 #include <math.h>
-#include "ReverbSC.h"
+#include "Sporth.h"
 
 #include "embed.cpp"
 
@@ -30,13 +30,13 @@
 extern "C"
 {
 
-Plugin::Descriptor PLUGIN_EXPORT reverbsc_plugin_descriptor =
+Plugin::Descriptor PLUGIN_EXPORT sporth_plugin_descriptor =
 {
 	STRINGIFY( PLUGIN_NAME ),
-	"ReverbSC",
-	QT_TRANSLATE_NOOP( "pluginBrowser", "Reverb algorithm by Sean Costello. Yay." ),
+	"Sporth",
+	QT_TRANSLATE_NOOP( "pluginBrowser", "Sporth Editor." ),
 	"Paul Batchelor",
-	0x0123,
+	0x0124,
 	Plugin::Effect,
 	new PluginPixmapLoader( "logo" ),
 	NULL,
@@ -45,8 +45,8 @@ Plugin::Descriptor PLUGIN_EXPORT reverbsc_plugin_descriptor =
 
 }
 
-ReverbSCEffect::ReverbSCEffect( Model* parent, const Descriptor::SubPluginFeatures::Key* key ) :
-	Effect( &reverbsc_plugin_descriptor, parent, key ),
+SporthEffect::SporthEffect( Model* parent, const Descriptor::SubPluginFeatures::Key* key ) :
+	Effect( &sporth_plugin_descriptor, parent, key ),
 	m_reverbSCControls( this )
 {
 	sp_create(&sp);
@@ -62,7 +62,7 @@ ReverbSCEffect::ReverbSCEffect( Model* parent, const Descriptor::SubPluginFeatur
 	sp_dcblock_init(sp, dcblk[1]);
 }
 
-ReverbSCEffect::~ReverbSCEffect()
+SporthEffect::~SporthEffect()
 {
 	sp_revsc_destroy(&revsc);
 	sp_dcblock_destroy(&dcblk[0]);
@@ -70,7 +70,7 @@ ReverbSCEffect::~ReverbSCEffect()
 	sp_destroy(&sp);
 }
 
-bool ReverbSCEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
+bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 {
 	if( !isEnabled() || !isRunning () )
 	{
@@ -91,7 +91,6 @@ bool ReverbSCEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 
 	for( fpp_t f = 0; f < frames; ++f )
 	{
-		outSum += buf[f][0]*buf[f][0] + buf[f][1]*buf[f][1];
 	
 		sample_t s[2] = { buf[f][0], buf[f][1] };
 
@@ -118,6 +117,7 @@ bool ReverbSCEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 		sp_dcblock_compute(sp, dcblk[1], &tmpR, &dcblkR);
 		buf[f][0] = d * buf[f][0] + w * dcblkL * outGain;
 		buf[f][1] = d * buf[f][1] + w * dcblkR * outGain;
+		outSum += buf[f][0]*buf[f][0] + buf[f][1]*buf[f][1];
 	}
 
 
@@ -132,7 +132,7 @@ extern "C"
 // necessary for getting instance out of shared lib
 Plugin * PLUGIN_EXPORT lmms_plugin_main( Model* parent, void* data )
 {
-	return new ReverbSCEffect( 
+	return new SporthEffect( 
 		parent, 
 		static_cast<const Plugin::Descriptor::SubPluginFeatures::Key*>(data) 
 	);

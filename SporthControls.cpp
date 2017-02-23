@@ -1,5 +1,5 @@
 /*
- * ReverbSCControls.cpp - controls for ReverbSC
+ * SporthControls.cpp - controls for Sporth
  *
  * Copyright (c) 2017 Paul Batchelor
  *
@@ -25,12 +25,12 @@
 
 #include <QDomElement>
 
-#include "ReverbSCControls.h"
-#include "ReverbSC.h"
+#include "SporthControls.h"
+#include "Sporth.h"
 #include "Engine.h"
 #include "Song.h"
 
-ReverbSCControls::ReverbSCControls( ReverbSCEffect* effect ) :
+SporthControls::SporthControls( SporthEffect* effect ) :
 	EffectControls( effect ),
 	m_effect( effect ),
 	m_inputGainModel( 0.0f, -60.0f, 15, 0.1f, this, tr( "Input Gain" ) ),
@@ -40,11 +40,11 @@ ReverbSCControls::ReverbSCControls( ReverbSCEffect* effect ) :
 {
 }
 
-void ReverbSCControls::changeControl()
+void SporthControls::changeControl()
 {
 }
 
-void ReverbSCControls::loadSettings( const QDomElement& _this )
+void SporthControls::loadSettings( const QDomElement& _this )
 {
 	m_inputGainModel.loadSettings( _this, "input_gain" );
 	m_sizeModel.loadSettings( _this, "size" );
@@ -52,7 +52,7 @@ void ReverbSCControls::loadSettings( const QDomElement& _this )
 	m_outputGainModel.loadSettings( _this, "output_gain" );
 }
 
-void ReverbSCControls::saveSettings( QDomDocument& doc, QDomElement& _this )
+void SporthControls::saveSettings( QDomDocument& doc, QDomElement& _this )
 {
 	m_inputGainModel.saveSettings( doc, _this, "input_gain" ); 
 	m_sizeModel.saveSettings( doc, _this, "size" ); 
