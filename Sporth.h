@@ -56,6 +56,8 @@ private:
     plumber_data pd;
     SPFLOAT prev;
     SPFLOAT inL;
+    SPFLOAT inR;
+    SPFLOAT bpm;
 	friend class SporthControls;
 } ;
 

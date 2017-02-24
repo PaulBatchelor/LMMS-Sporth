@@ -25,6 +25,7 @@
 
 #include "Sporth.h"
 
+#include "Song.h"
 #include "embed.cpp"
 
 #define DB2LIN(X) pow(10, X / 20.0f);
@@ -113,6 +114,7 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
         prev = compile;
 
         inL = buf[f][0];
+        inR = buf[f][1];
         pd.p[0] = inGain;
         plumber_compute(&pd, PLUMBER_COMPUTE);
         outR = sporth_stack_pop_float(&pd.sporth.stack);
@@ -137,12 +139,17 @@ void SporthEffect::recompile()
     std::string txt = m_reverbSCControls.sporth_string.toUtf8().constData();
     std::cout << txt << "\n";
     inL = 0;
+    inR = 0;
+    /* TODO: make worth with automation */
+    bpm = Engine::getSong()->getTempo();
 
     /* file pointer needs to be NULL for reinit to work with strings */
     pd.fp = NULL;
     plumber_reinit(&pd);
     plumber_ftmap_delete(&pd, 0);
     plumber_ftmap_add_userdata(&pd, "inL", &inL);
+    plumber_ftmap_add_userdata(&pd, "inR", &inR);
+    plumber_ftmap_add_userdata(&pd, "bpm", &bpm);
     plumber_ftmap_delete(&pd, 1);
     error = plumber_reparse_string(&pd, (char *)txt.c_str());
     plumber_swap(&pd, error);
