@@ -23,6 +23,7 @@
  */
 
 #include <QLayout>
+#include <iostream>
 
 #include "SporthControlDialog.h"
 #include "SporthControls.h"
@@ -68,4 +69,8 @@ SporthControlDialog::SporthControlDialog( SporthControls* controls ) :
     controls->textEditor = new QPlainTextEdit(this);
     controls->textEditor->move(16, 50);
     controls->textEditor->resize(180, 90);
+    
+    std::string txt = controls->sporth_string.toUtf8().constData();
+    std::cout << "dialogue " << txt << "\n";
+    controls->textEditor->document()->setPlainText(controls->sporth_string);
 }

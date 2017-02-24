@@ -52,6 +52,7 @@ void SporthControls::loadSettings( const QDomElement& _this )
 	m_sizeModel.loadSettings( _this, "size" );
 	m_colorModel.loadSettings( _this, "color" );
 	m_outputGainModel.loadSettings( _this, "output_gain" );
+    sporth_string = _this.attribute("sporth");
 }
 
 void SporthControls::saveSettings( QDomDocument& doc, QDomElement& _this )
@@ -60,4 +61,5 @@ void SporthControls::saveSettings( QDomDocument& doc, QDomElement& _this )
 	m_sizeModel.saveSettings( doc, _this, "size" ); 
 	m_colorModel.saveSettings( doc, _this, "color" );
 	m_outputGainModel.saveSettings( doc, _this, "output_gain" ); 
+    _this.setAttribute("sporth", textEditor->toPlainText());
 }

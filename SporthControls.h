@@ -76,6 +76,7 @@ private:
     BoolModel m_compileModel;
 
     QPlainTextEdit *textEditor;
+    QString sporth_string;
 
 	friend class SporthControlDialog;
 	friend class SporthEffect;

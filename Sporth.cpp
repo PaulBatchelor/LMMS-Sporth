@@ -93,7 +93,8 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
         std::cout << "BING!\n";
         prev = compile;
 
-        std::string txt = m_reverbSCControls.textEditor->toPlainText().toUtf8().constData();
+        m_reverbSCControls.sporth_string = m_reverbSCControls.textEditor->toPlainText();
+        std::string txt = m_reverbSCControls.sporth_string.toUtf8().constData();
         std::cout << txt << "\n";
         plumber_recompile_string(&pd, (char *)txt.c_str());
     }
