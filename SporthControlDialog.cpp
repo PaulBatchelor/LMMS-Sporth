@@ -36,7 +36,7 @@ SporthControlDialog::SporthControlDialog( SporthControls* controls ) :
 	QPalette pal;
 	pal.setBrush( backgroundRole(), PLUGIN_NAME::getIconPixmap( "artwork" ) );
 	setPalette( pal );
-	setFixedSize( 500, 500 );
+	setFixedSize( 332, 500 );
 	
 	Knob * inputGainKnob = new Knob( knobBright_26, this);
 	inputGainKnob -> move( 16, 10 );
@@ -57,7 +57,7 @@ SporthControlDialog::SporthControlDialog( SporthControls* controls ) :
 	colorKnob->setHintText( tr( "Color:" ) , "" );
 
     Knob *but  = new Knob(knobBright_26, this);
-    but->move( 139, 10 );
+    but->move( (300 - 41), 10 );
 	but->setLabel( tr( "Compile" ) );
     but->setModel(&controls->m_compileModel);
 	but->setHintText( tr( "Compile" ) , "" );
