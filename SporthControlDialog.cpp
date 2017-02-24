@@ -36,7 +36,7 @@ SporthControlDialog::SporthControlDialog( SporthControls* controls ) :
 	QPalette pal;
 	pal.setBrush( backgroundRole(), PLUGIN_NAME::getIconPixmap( "artwork" ) );
 	setPalette( pal );
-	setFixedSize( 300, 300 );
+	setFixedSize( 500, 500 );
 	
 	Knob * inputGainKnob = new Knob( knobBright_26, this);
 	inputGainKnob -> move( 16, 10 );
