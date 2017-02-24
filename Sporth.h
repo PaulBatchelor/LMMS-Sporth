@@ -44,14 +44,14 @@ public:
 
 	virtual EffectControls* controls()
 	{
-		return &m_reverbSCControls;
+		return &m_sporthControls;
 	}
 
 
     void recompile();
 
 private:
-	SporthControls m_reverbSCControls;
+	SporthControls m_sporthControls;
 	sp_data *sp;
     plumber_data pd;
     SPFLOAT prev;

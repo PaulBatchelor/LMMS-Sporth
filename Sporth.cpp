@@ -51,7 +51,7 @@ Plugin::Descriptor PLUGIN_EXPORT sporthedit_plugin_descriptor =
 
 SporthEffect::SporthEffect( Model* parent, const Descriptor::SubPluginFeatures::Key* key ) :
 	Effect( &sporthedit_plugin_descriptor, parent, key ),
-	m_reverbSCControls( this )
+	m_sporthControls( this )
 {
 	sp_create(&sp);
 	sp->sr = Engine::mixer()->processingSampleRate();
@@ -86,14 +86,14 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 
 	SPFLOAT outL, outR;
 	
-	ValueBuffer * inGainBuf = m_reverbSCControls.m_P0Model.valueBuffer();
-	ValueBuffer * sizeBuf = m_reverbSCControls.m_P1Model.valueBuffer();
-	ValueBuffer * colorBuf = m_reverbSCControls.m_P2Model.valueBuffer();
-	ValueBuffer * outGainBuf = m_reverbSCControls.m_P3Model.valueBuffer();
-	ValueBuffer * compileBuf = m_reverbSCControls.m_compileModel.valueBuffer();
+	ValueBuffer * inGainBuf = m_sporthControls.m_P0Model.valueBuffer();
+	ValueBuffer * sizeBuf = m_sporthControls.m_P1Model.valueBuffer();
+	ValueBuffer * colorBuf = m_sporthControls.m_P2Model.valueBuffer();
+	ValueBuffer * outGainBuf = m_sporthControls.m_P3Model.valueBuffer();
+	ValueBuffer * compileBuf = m_sporthControls.m_compileModel.valueBuffer();
 
 		
-    SPFLOAT compile = m_reverbSCControls.m_compileModel.value();
+    SPFLOAT compile = m_sporthControls.m_compileModel.value();
 
     if(compile != prev && prev != -1 && compile > 0) {
         prev = compile;
@@ -105,11 +105,11 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 	
 		const SPFLOAT inGain = (SPFLOAT)(inGainBuf ? 
 			inGainBuf->values()[f] 
-			: m_reverbSCControls.m_P0Model.value());
+			: m_sporthControls.m_P0Model.value());
 
 		const SPFLOAT outGain = (SPFLOAT)DB2LIN((outGainBuf ? 
 			outGainBuf->values()[f] 
-			: m_reverbSCControls.m_P3Model.value()));
+			: m_sporthControls.m_P3Model.value()));
 		
 
         prev = compile;
@@ -136,8 +136,8 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 void SporthEffect::recompile()
 {
     int error;
-    m_reverbSCControls.sporth_string = m_reverbSCControls.textEditor->toPlainText();
-    std::string txt = m_reverbSCControls.sporth_string.toUtf8().constData();
+    m_sporthControls.sporth_string = m_sporthControls.textEditor->toPlainText();
+    std::string txt = m_sporthControls.sporth_string.toUtf8().constData();
     std::cout << txt << "\n";
     inL = 0;
     inR = 0;
