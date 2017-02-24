@@ -56,21 +56,15 @@ SporthControlDialog::SporthControlDialog( SporthControls* controls ) :
 	colorKnob->setLabel( tr( "Color" ) );
 	colorKnob->setHintText( tr( "Color:" ) , "" );
 
-	//Knob * outputGainKnob = new Knob( knobBright_26, this);
-	//outputGainKnob -> move( 139, 10 );
-	//outputGainKnob->setModel( &controls->m_outputGainModel );
-	//outputGainKnob->setLabel( tr( "Output" ) );
-	//outputGainKnob->setHintText( tr( "Output Gain:" ) , "dB" );
-
-    LedCheckBox *but  = new LedCheckBox(this, tr("compile"));
+    Knob *but  = new Knob(knobBright_26, this);
     but->move( 139, 10 );
+	but->setLabel( tr( "Compile" ) );
     but->setModel(&controls->m_compileModel);
+	but->setHintText( tr( "Compile" ) , "" );
 
     controls->textEditor = new QPlainTextEdit(this);
     controls->textEditor->move(16, 50);
-    controls->textEditor->resize(180, 90);
+    controls->textEditor->resize(300, 400);
     
-    std::string txt = controls->sporth_string.toUtf8().constData();
-    std::cout << "dialogue " << txt << "\n";
     controls->textEditor->document()->setPlainText(controls->sporth_string);
 }

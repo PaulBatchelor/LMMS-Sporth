@@ -73,7 +73,7 @@ private:
 	FloatModel m_sizeModel;
 	FloatModel m_colorModel;
 	FloatModel m_outputGainModel;
-    BoolModel m_compileModel;
+    FloatModel m_compileModel;
 
     QPlainTextEdit *textEditor;
     QString sporth_string;

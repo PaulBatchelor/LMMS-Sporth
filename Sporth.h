@@ -48,11 +48,14 @@ public:
 	}
 
 
+    void recompile();
+
 private:
 	SporthControls m_reverbSCControls;
 	sp_data *sp;
     plumber_data pd;
     SPFLOAT prev;
+    SPFLOAT inL;
 	friend class SporthControls;
 } ;
 

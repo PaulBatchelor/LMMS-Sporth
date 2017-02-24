@@ -32,6 +32,7 @@
 extern "C"
 {
 
+static int sporth_lmms_in(sporth_stack *stack, void *ud);
 Plugin::Descriptor PLUGIN_EXPORT sporthedit_plugin_descriptor =
 {
 	STRINGIFY( PLUGIN_NAME ),
@@ -54,9 +55,11 @@ SporthEffect::SporthEffect( Model* parent, const Descriptor::SubPluginFeatures::
 	sp_create(&sp);
 	sp->sr = Engine::mixer()->processingSampleRate();
     plumber_register(&pd);
+    pd.sporth.flist[SPORTH_IN - SPORTH_FOFFSET].func = sporth_lmms_in;
     plumber_init(&pd);
     pd.sp = sp;
-    plumber_parse_string(&pd, "0 p 100 300 scale 0.1 sine dup");
+    pd.ud = &inL;
+    plumber_parse_string(&pd, "0 0");
     plumber_compute(&pd, PLUMBER_INIT);
     prev = -1;
 
@@ -76,8 +79,9 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 	}
 
 	double outSum = 0.0;
-	const float d = (dryLevel() + 1) * 0.5;
-	const float w = (wetLevel() + 1) * 0.5;
+    /* until LMMS gets their shit together, this is how we handle wet/dry */
+	const float d = (1 + wetLevel()) * 0.5;
+	const float w = 1 - d;
 
 	SPFLOAT outL, outR;
 	
@@ -89,15 +93,12 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 
 		
     SPFLOAT compile = m_reverbSCControls.m_compileModel.value();
-    if(compile != prev && prev != -1) {
-        std::cout << "BING!\n";
-        prev = compile;
 
-        m_reverbSCControls.sporth_string = m_reverbSCControls.textEditor->toPlainText();
-        std::string txt = m_reverbSCControls.sporth_string.toUtf8().constData();
-        std::cout << txt << "\n";
-        plumber_recompile_string(&pd, (char *)txt.c_str());
+    if(compile != prev && prev != -1 && compile > 0) {
+        prev = compile;
+        recompile();
     }
+
 	for( fpp_t f = 0; f < frames; ++f )
 	{
 	
@@ -109,23 +110,42 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 			: m_reverbSCControls.m_outputGainModel.value()));
 		
 
-
         prev = compile;
 
+        inL = buf[f][0];
         pd.p[0] = inGain;
         plumber_compute(&pd, PLUMBER_COMPUTE);
         outR = sporth_stack_pop_float(&pd.sporth.stack);
         outL = sporth_stack_pop_float(&pd.sporth.stack);
 
-		buf[f][0] = d * buf[f][0] + w * outL * outGain;
-		buf[f][1] = d * buf[f][1] + w * outR * outGain;
-		outSum += buf[f][0]*buf[f][0] + buf[f][1]*buf[f][1];
+		buf[f][0] = d * buf[f][0] + w * outL;
+		buf[f][1] = d * buf[f][1] + w * outR;
+
+		outSum += 1 + buf[f][0]*buf[f][0] + buf[f][1]*buf[f][1];
 	}
 
 
 	checkGate( outSum / frames );
 
 	return isRunning();
+}
+    
+void SporthEffect::recompile()
+{
+    int error;
+    m_reverbSCControls.sporth_string = m_reverbSCControls.textEditor->toPlainText();
+    std::string txt = m_reverbSCControls.sporth_string.toUtf8().constData();
+    std::cout << txt << "\n";
+    inL = 0;
+
+    /* file pointer needs to be NULL for reinit to work with strings */
+    pd.fp = NULL;
+    plumber_reinit(&pd);
+    plumber_ftmap_delete(&pd, 0);
+    plumber_ftmap_add_userdata(&pd, "inL", &inL);
+    plumber_ftmap_delete(&pd, 1);
+    error = plumber_reparse_string(&pd, (char *)txt.c_str());
+    plumber_swap(&pd, error);
 }
 
 extern "C"
@@ -138,6 +158,51 @@ Plugin * PLUGIN_EXPORT lmms_plugin_main( Model* parent, void* data )
 		parent, 
 		static_cast<const Plugin::Descriptor::SubPluginFeatures::Key*>(data) 
 	);
+}
+
+static int sporth_lmms_in(sporth_stack *stack, void *ud)
+{
+    plumber_data *pd = (plumber_data *) ud;
+
+    SPFLOAT *in = (SPFLOAT *)pd->ud;
+    switch(pd->mode) {
+        case PLUMBER_CREATE:
+
+#ifdef DEBUG_MODE
+            fprintf(stderr, "CHUCK IN: creating\n");
+#endif
+            plumber_add_ugen(pd, SPORTH_IN, NULL);
+
+            sporth_stack_push_float(stack, 0);
+            break;
+        case PLUMBER_INIT:
+
+#ifdef DEBUG_MODE
+            fprintf(stderr, "CHUCK IN: initialising.\n");
+#endif
+
+            sporth_stack_push_float(stack, 0);
+
+            break;
+
+        case PLUMBER_COMPUTE:
+
+            sporth_stack_push_float(stack, *in);
+
+            break;
+
+        case PLUMBER_DESTROY:
+#ifdef DEBUG_MODE
+            fprintf(stderr, "CHUCK IN: destroying.\n");
+#endif
+
+            break;
+
+        default:
+            fprintf(stderr, "Unknown mode!\n");
+            break;
+    }
+    return PLUMBER_OK;
 }
 
 }
