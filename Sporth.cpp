@@ -86,10 +86,10 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 
 	SPFLOAT outL, outR;
 	
-	ValueBuffer * inGainBuf = m_reverbSCControls.m_inputGainModel.valueBuffer();
-	ValueBuffer * sizeBuf = m_reverbSCControls.m_sizeModel.valueBuffer();
-	ValueBuffer * colorBuf = m_reverbSCControls.m_colorModel.valueBuffer();
-	ValueBuffer * outGainBuf = m_reverbSCControls.m_outputGainModel.valueBuffer();
+	ValueBuffer * inGainBuf = m_reverbSCControls.m_P0Model.valueBuffer();
+	ValueBuffer * sizeBuf = m_reverbSCControls.m_P1Model.valueBuffer();
+	ValueBuffer * colorBuf = m_reverbSCControls.m_P2Model.valueBuffer();
+	ValueBuffer * outGainBuf = m_reverbSCControls.m_P3Model.valueBuffer();
 	ValueBuffer * compileBuf = m_reverbSCControls.m_compileModel.valueBuffer();
 
 		
@@ -103,12 +103,13 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 	for( fpp_t f = 0; f < frames; ++f )
 	{
 	
-		const SPFLOAT inGain = (SPFLOAT)DB2LIN((inGainBuf ? 
+		const SPFLOAT inGain = (SPFLOAT)(inGainBuf ? 
 			inGainBuf->values()[f] 
-			: m_reverbSCControls.m_inputGainModel.value()));
+			: m_reverbSCControls.m_P0Model.value());
+
 		const SPFLOAT outGain = (SPFLOAT)DB2LIN((outGainBuf ? 
 			outGainBuf->values()[f] 
-			: m_reverbSCControls.m_outputGainModel.value()));
+			: m_reverbSCControls.m_P3Model.value()));
 		
 
         prev = compile;

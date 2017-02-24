@@ -40,21 +40,27 @@ SporthControlDialog::SporthControlDialog( SporthControls* controls ) :
 	
 	Knob * inputGainKnob = new Knob( knobBright_26, this);
 	inputGainKnob -> move( 16, 10 );
-	inputGainKnob->setModel( &controls->m_inputGainModel );
-	inputGainKnob->setLabel( tr( "Input" ) );
-	inputGainKnob->setHintText( tr( "Input Gain:" ) , "dB" );
+	inputGainKnob->setModel( &controls->m_P0Model);
+	inputGainKnob->setLabel( tr( "P0" ) );
+	inputGainKnob->setHintText( tr( "P0:" ) , "" );
 
 	Knob * sizeKnob = new Knob( knobBright_26, this);
 	sizeKnob -> move( 57, 10 );
-	sizeKnob->setModel( &controls->m_sizeModel );
-	sizeKnob->setLabel( tr( "Size" ) );
-	sizeKnob->setHintText( tr( "Size:" ) , "" );
+	sizeKnob->setModel( &controls->m_P1Model);
+	sizeKnob->setLabel( tr( "P1" ) );
+	sizeKnob->setHintText( tr( "P1:" ) , "" );
 
 	Knob * colorKnob = new Knob( knobBright_26, this);
 	colorKnob -> move( 98, 10 );
-	colorKnob->setModel( &controls->m_colorModel );
-	colorKnob->setLabel( tr( "Color" ) );
-	colorKnob->setHintText( tr( "Color:" ) , "" );
+	colorKnob->setModel( &controls->m_P2Model);
+	colorKnob->setLabel( tr( "P2" ) );
+	colorKnob->setHintText( tr( "P2:" ) , "" );
+	
+    Knob * P3Knob = new Knob( knobBright_26, this);
+	P3Knob-> move( 139, 10 );
+	P3Knob->setModel( &controls->m_P3Model);
+	P3Knob->setLabel( tr( "P3" ) );
+	P3Knob->setHintText( tr( "P3:" ) , "" );
 
     Knob *but  = new Knob(knobBright_26, this);
     but->move( (300 - 41), 10 );

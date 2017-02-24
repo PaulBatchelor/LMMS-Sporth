@@ -34,10 +34,10 @@
 SporthControls::SporthControls( SporthEffect* effect ) :
 	EffectControls( effect ),
 	m_effect( effect ),
-	m_inputGainModel( 0.0f, 0, 1, 0.001f, this, tr( "P0" ) ),
-	m_sizeModel( 0.0f, 0.0f, 1.0f, 0.001f, this, tr( "P1" ) ),
-	m_colorModel( 0.0f, 0.0f, 1.0f, 0.001f, this, tr( "P2" ) ),
-	m_outputGainModel( 0.0f, 0.0f, 1.0f, 0.001f, this, tr( "P3" ) ),
+	m_P0Model( 0.0f, 0, 1, 0.001f, this, tr( "P0" ) ),
+	m_P1Model( 0.0f, 0.0f, 1.0f, 0.001f, this, tr( "P1" ) ),
+	m_P2Model( 0.0f, 0.0f, 1.0f, 0.001f, this, tr( "P2" ) ),
+	m_P3Model( 0.0f, 0.0f, 1.0f, 0.001f, this, tr( "P3" ) ),
 	m_compileModel( 0.0f, 0.0f, 1.0f, 0.5f, this, tr( "Compile" ) )
 {
 }
@@ -48,20 +48,20 @@ void SporthControls::changeControl()
 
 void SporthControls::loadSettings( const QDomElement& _this )
 {
-	m_inputGainModel.loadSettings( _this, "input_gain" );
-	m_sizeModel.loadSettings( _this, "size" );
-	m_colorModel.loadSettings( _this, "color" );
-	m_outputGainModel.loadSettings( _this, "output_gain" );
+	m_P0Model.loadSettings( _this, "P0" );
+	m_P1Model.loadSettings( _this, "P1" );
+	m_P2Model.loadSettings( _this, "P2" );
+	m_P3Model.loadSettings( _this, "P3" );
 	m_compileModel.loadSettings( _this, "compile" );
     sporth_string = _this.attribute("sporth");
 }
 
 void SporthControls::saveSettings( QDomDocument& doc, QDomElement& _this )
 {
-	m_inputGainModel.saveSettings( doc, _this, "input_gain" ); 
-	m_sizeModel.saveSettings( doc, _this, "size" ); 
-	m_colorModel.saveSettings( doc, _this, "color" );
-	m_outputGainModel.saveSettings( doc, _this, "output_gain" ); 
+	m_P0Model.saveSettings( doc, _this, "P0" ); 
+	m_P1Model.saveSettings( doc, _this, "P1" ); 
+	m_P2Model.saveSettings( doc, _this, "P2" );
+	m_P3Model.saveSettings( doc, _this, "P3" ); 
 	m_compileModel.saveSettings( doc, _this, "compile" ); 
     _this.setAttribute("sporth", textEditor->toPlainText());
 }

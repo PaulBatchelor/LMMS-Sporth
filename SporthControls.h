@@ -69,10 +69,10 @@ private slots:
 
 private:
 	SporthEffect* m_effect;
-	FloatModel m_inputGainModel;
-	FloatModel m_sizeModel;
-	FloatModel m_colorModel;
-	FloatModel m_outputGainModel;
+	FloatModel m_P0Model;
+	FloatModel m_P1Model;
+	FloatModel m_P2Model;
+	FloatModel m_P3Model;
     FloatModel m_compileModel;
 
     QPlainTextEdit *textEditor;
