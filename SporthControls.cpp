@@ -38,7 +38,7 @@ SporthControls::SporthControls( SporthEffect* effect ) :
 	m_P1Model( 0.0f, 0.0f, 1.0f, 0.001f, this, tr( "P1" ) ),
 	m_P2Model( 0.0f, 0.0f, 1.0f, 0.001f, this, tr( "P2" ) ),
 	m_P3Model( 0.0f, 0.0f, 1.0f, 0.001f, this, tr( "P3" ) ),
-	m_compileModel( 0.0f, 0.0f, 1.0f, 0.5f, this, tr( "Compile" ) )
+	m_compileModel( 0.0f, 0.0f, 1.0f, 1.0f, this, tr( "Compile" ) )
 {
 }
 

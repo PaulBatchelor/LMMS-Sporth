@@ -80,16 +80,24 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 	}
 
 	double outSum = 0.0;
-    /* until LMMS gets their shit together, this is how we handle wet/dry */
+
+    /* until LMMS gets their shit together, wet/dry will be calculated the
+     * following way:
+     *
+     * In LMMS, the dry value goes from range 0-2, while the wet value is -1,1
+     * Ideally, this range should be 0-1, so the wet signal is taken and scaled
+     * for both the dry and wet signals.
+     */
+
 	const float d = (1 + wetLevel()) * 0.5;
 	const float w = 1 - d;
 
 	SPFLOAT outL, outR;
 	
-	ValueBuffer * inGainBuf = m_sporthControls.m_P0Model.valueBuffer();
-	ValueBuffer * sizeBuf = m_sporthControls.m_P1Model.valueBuffer();
-	ValueBuffer * colorBuf = m_sporthControls.m_P2Model.valueBuffer();
-	ValueBuffer * outGainBuf = m_sporthControls.m_P3Model.valueBuffer();
+	ValueBuffer * p0Buf = m_sporthControls.m_P0Model.valueBuffer();
+	ValueBuffer * p1Buf = m_sporthControls.m_P1Model.valueBuffer();
+	ValueBuffer * p2Buf = m_sporthControls.m_P2Model.valueBuffer();
+	ValueBuffer * p3Buf = m_sporthControls.m_P3Model.valueBuffer();
 	ValueBuffer * compileBuf = m_sporthControls.m_compileModel.valueBuffer();
 
 		
@@ -103,20 +111,29 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 	for( fpp_t f = 0; f < frames; ++f )
 	{
 	
-		const SPFLOAT inGain = (SPFLOAT)(inGainBuf ? 
-			inGainBuf->values()[f] 
-			: m_sporthControls.m_P0Model.value());
-
-		const SPFLOAT outGain = (SPFLOAT)DB2LIN((outGainBuf ? 
-			outGainBuf->values()[f] 
-			: m_sporthControls.m_P3Model.value()));
-		
 
         prev = compile;
 
         inL = buf[f][0];
         inR = buf[f][1];
-        pd.p[0] = inGain;
+
+        pd.p[0] = (SPFLOAT)(p0Buf ? 
+			p0Buf ->values()[f] 
+			: m_sporthControls.m_P0Model.value());
+
+        pd.p[1] = (SPFLOAT)(p1Buf ? 
+			p1Buf ->values()[f] 
+			: m_sporthControls.m_P1Model.value());
+        
+        pd.p[2] = (SPFLOAT)(p2Buf ? 
+			p2Buf ->values()[f] 
+			: m_sporthControls.m_P2Model.value());
+       
+        pd.p[3] = (SPFLOAT)(p3Buf ? 
+			p3Buf ->values()[f] 
+			: m_sporthControls.m_P3Model.value());
+
+		
         plumber_compute(&pd, PLUMBER_COMPUTE);
         outR = sporth_stack_pop_float(&pd.sporth.stack);
         outL = sporth_stack_pop_float(&pd.sporth.stack);
