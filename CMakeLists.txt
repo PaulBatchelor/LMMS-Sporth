@@ -102,4 +102,4 @@ BUILD_PLUGIN(
 	EMBEDDED_RESOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.png"
 )
 
-TARGET_LINK_LIBRARIES(sporthedit soundpipe sporth)
+TARGET_LINK_LIBRARIES(sporthedit sporth soundpipe)
