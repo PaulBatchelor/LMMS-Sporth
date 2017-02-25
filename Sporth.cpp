@@ -63,7 +63,8 @@ SporthEffect::SporthEffect( Model* parent, const Descriptor::SubPluginFeatures::
     plumber_parse_string(&pd, "0 0");
     plumber_compute(&pd, PLUMBER_INIT);
     prev = -1;
-
+    sporth_compile = 0;
+    please_compile = 0;
 }
 
 SporthEffect::~SporthEffect()
@@ -103,15 +104,14 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 		
     SPFLOAT compile = m_sporthControls.m_compileModel.value();
 
-    if(compile != prev && prev != -1 && compile > 0) {
+    if((compile != prev && prev != -1 && compile > 0) || 
+            sporth_compile) {
         prev = compile;
         recompile();
     }
 
-    bpm = Engine::getSong()->getTempo();
 	for( fpp_t f = 0; f < frames; ++f )
 	{
-	
 
         prev = compile;
 
@@ -134,7 +134,6 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 			p3Buf ->values()[f] 
 			: m_sporthControls.m_P3Model.value());
 
-		
         plumber_compute(&pd, PLUMBER_COMPUTE);
         outR = sporth_stack_pop_float(&pd.sporth.stack);
         outL = sporth_stack_pop_float(&pd.sporth.stack);
@@ -143,6 +142,12 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 		buf[f][1] = d * buf[f][1] + w * outR;
 
 		outSum += 1 + buf[f][0]*buf[f][0] + buf[f][1]*buf[f][1];
+
+        if(sporth_compile != 0 && please_compile == 0) {
+            please_compile = -1;
+            recompile();
+        } else if(please_compile < 0) please_compile = 0;
+
 	}
 
 
@@ -169,6 +174,7 @@ void SporthEffect::recompile()
     plumber_ftmap_add_userdata(&pd, "inL", &inL);
     plumber_ftmap_add_userdata(&pd, "inR", &inR);
     plumber_ftmap_add_userdata(&pd, "bpm", &bpm);
+    plumber_ftmap_add_userdata(&pd, "compile", &sporth_compile);
     plumber_ftmap_delete(&pd, 1);
     error = plumber_reparse_string(&pd, (char *)txt.c_str());
     plumber_swap(&pd, error);

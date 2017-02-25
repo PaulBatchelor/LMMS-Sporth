@@ -58,6 +58,8 @@ private:
     SPFLOAT inL;
     SPFLOAT inR;
     SPFLOAT bpm;
+    SPFLOAT sporth_compile;
+    int please_compile;
 	friend class SporthControls;
 } ;
 

@@ -72,5 +72,8 @@ SporthControlDialog::SporthControlDialog( SporthControls* controls ) :
     controls->textEditor->move(16, 50);
     controls->textEditor->resize(300, 400);
     
+    QFont font = controls->textEditor->document()->defaultFont();
+    font.setFamily("Courier New");
+    controls->textEditor->document()->setDefaultFont(font);
     controls->textEditor->document()->setPlainText(controls->sporth_string);
 }
