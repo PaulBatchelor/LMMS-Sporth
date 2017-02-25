@@ -108,6 +108,7 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
         recompile();
     }
 
+    bpm = Engine::getSong()->getTempo();
 	for( fpp_t f = 0; f < frames; ++f )
 	{
 	
