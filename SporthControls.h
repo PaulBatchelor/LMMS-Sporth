@@ -74,6 +74,7 @@ private:
 	FloatModel m_P2Model;
 	FloatModel m_P3Model;
     FloatModel m_compileModel;
+    BoolModel m_compileButtonModel;
 
     QPlainTextEdit *textEditor;
     QString sporth_string;

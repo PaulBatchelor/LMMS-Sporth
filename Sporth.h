@@ -60,6 +60,7 @@ private:
     SPFLOAT bpm;
     SPFLOAT sporth_compile;
     int please_compile;
+    SPFLOAT button_prev;
 	friend class SporthControls;
 } ;
 

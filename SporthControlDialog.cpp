@@ -67,6 +67,10 @@ SporthControlDialog::SporthControlDialog( SporthControls* controls ) :
 	but->setLabel( tr( "Compile" ) );
     but->setModel(&controls->m_compileModel);
 	but->setHintText( tr( "Compile" ) , "" );
+    
+    LedCheckBox *box = new LedCheckBox("", this);
+    box->move( (300 - 2 * 41), 10 );
+    box->setModel(&controls->m_compileButtonModel);
 
     controls->textEditor = new QPlainTextEdit(this);
     controls->textEditor->move(16, 50);

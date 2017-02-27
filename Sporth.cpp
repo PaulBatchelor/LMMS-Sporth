@@ -65,6 +65,7 @@ SporthEffect::SporthEffect( Model* parent, const Descriptor::SubPluginFeatures::
     prev = -1;
     sporth_compile = 0;
     please_compile = 0;
+    button_prev = 0;
 }
 
 SporthEffect::~SporthEffect()
@@ -103,12 +104,17 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 
 		
     SPFLOAT compile = m_sporthControls.m_compileModel.value();
+    
+    SPFLOAT button_compile = m_sporthControls.m_compileButtonModel.value();
 
     if((compile != prev && prev != -1 && compile > 0) || 
-            sporth_compile) {
+    sporth_compile || 
+    (button_compile == 1.0 && button_prev != 1.0)) {
         prev = compile;
         recompile();
     }
+
+    button_prev = button_compile;
 
 	for( fpp_t f = 0; f < frames; ++f )
 	{
