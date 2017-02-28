@@ -66,6 +66,7 @@ SporthEffect::SporthEffect( Model* parent, const Descriptor::SubPluginFeatures::
     sporth_compile = 0;
     please_compile = 0;
     button_prev = 0;
+    init = 1;
 }
 
 SporthEffect::~SporthEffect()
@@ -102,6 +103,12 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 	ValueBuffer * p3Buf = m_sporthControls.m_P3Model.valueBuffer();
 	ValueBuffer * compileBuf = m_sporthControls.m_compileModel.valueBuffer();
 
+    if(init == 1) {
+        init = 0;
+        if(m_sporthControls.sporth_string.length() > 0) {
+            recompile();
+        }
+    }
 		
     SPFLOAT compile = m_sporthControls.m_compileModel.value();
     
@@ -111,6 +118,7 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
     sporth_compile || 
     (button_compile == 1.0 && button_prev != 1.0)) {
         prev = compile;
+        setText();
         recompile();
     }
 
@@ -151,6 +159,7 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 
         if(sporth_compile != 0 && please_compile == 0) {
             please_compile = -1;
+            setText();
             recompile();
         } else if(please_compile < 0) please_compile = 0;
 
@@ -161,11 +170,15 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 
 	return isRunning();
 }
+
+void SporthEffect::setText()
+{
+    m_sporthControls.sporth_string = m_sporthControls.textEditor->toPlainText();
+}
     
 void SporthEffect::recompile()
 {
     int error;
-    m_sporthControls.sporth_string = m_sporthControls.textEditor->toPlainText();
     std::string txt = m_sporthControls.sporth_string.toUtf8().constData();
     std::cout << txt << "\n";
     inL = 0;

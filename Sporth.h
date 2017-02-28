@@ -49,6 +49,7 @@ public:
 
 
     void recompile();
+    void setText();
 
 private:
 	SporthControls m_sporthControls;
@@ -61,6 +62,7 @@ private:
     SPFLOAT sporth_compile;
     int please_compile;
     SPFLOAT button_prev;
+    int init;
 	friend class SporthControls;
 } ;
 
