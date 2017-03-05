@@ -64,5 +64,5 @@ void SporthControls::saveSettings( QDomDocument& doc, QDomElement& _this )
 	m_P2Model.saveSettings( doc, _this, "P2" );
 	m_P3Model.saveSettings( doc, _this, "P3" ); 
 	m_compileModel.saveSettings( doc, _this, "compile" ); 
-    _this.setAttribute("sporth", textEditor->toPlainText());
+    _this.setAttribute("sporth", sporth_string);
 }
