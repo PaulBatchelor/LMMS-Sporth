@@ -173,6 +173,7 @@ bool SporthEffect::processAudioBuffer( sampleFrame* buf, const fpp_t frames )
 
 void SporthEffect::setText()
 {
+    if(m_sporthControls.textEditor == NULL) return;
     m_sporthControls.sporth_string = m_sporthControls.textEditor->toPlainText();
 }
     
